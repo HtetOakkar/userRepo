@@ -50,6 +50,7 @@ public class UserController {
 	public UserResponse createUserRoleAdmin(@RequestBody @Valid UserRequest request) {
 		request.setPassword(encoder.encode(request.getPassword()));
 		UserDto userDto = userMapper.toDto(request);
+		System.out.println(request.getMobileNumber());
 		UserDto savedUserDto = userService.createAdmin(userDto);
 		UserResponse response = userMapper.toResponse(savedUserDto);
 		return response;
