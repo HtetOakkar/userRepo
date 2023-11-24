@@ -2,7 +2,6 @@ package com.test.main.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,7 +19,6 @@ import com.test.main.security.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableScheduling
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -63,13 +61,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable().cors().disable();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.authorizeRequests()
-				.antMatchers("api/users/**")
+				.antMatchers("/api/users/**")
 				.permitAll()
-				.antMatchers("/api/auth/user/login", "/api/auth/admin/login")
+				.antMatchers("/api/auth/user/login", "/api/auth/admin/login", "/socket/**")
 				.permitAll()
 				.anyRequest().authenticated()
 				.and()
-				.exceptionHandling().authenticationEntryPoint(unauthorizedHandler);
-		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+				.exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+				.and()
+			    .headers().frameOptions().sameOrigin()
+				.and()
+				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 }

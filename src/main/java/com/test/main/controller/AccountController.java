@@ -25,7 +25,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class AccountController {
 	
 	private AccountMapper accountMapper;
@@ -34,7 +34,7 @@ public class AccountController {
 	
 	private UserService userService;
 	
-	@PostMapping(path = "/users/account/create")
+	@PostMapping("/account/create")
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public AccountResponse createAccount(@RequestBody AccountRequest request) {
 		AccountDto accountDto = accountMapper.toDto(request);
@@ -43,7 +43,7 @@ public class AccountController {
 		return response;
 	}
 	
-	@GetMapping(path = "/users/account/get")
+	@GetMapping(path = "/account/get")
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public AccountResponse getAmount() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -54,7 +54,7 @@ public class AccountController {
 		return response;
 	}
 	
-	@PutMapping(path = "/users/account/{id}/add")
+	@PutMapping(path = "/account/{id}/add")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public AccountResponse addAmount(@PathVariable(value = "id") Long id, @RequestBody AccountRequest request) {
 		AccountDto accountDto = accountService.addAmount(id, request);

@@ -34,7 +34,7 @@ import com.test.main.service.UserService;
 import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
 
 	private UserMapper userMapper;
@@ -45,7 +45,7 @@ public class UserController {
 	
 	private BCryptPasswordEncoder encoder;
 
-	@PostMapping(path="/users/admin/create")
+	@PostMapping("/admin")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public UserResponse createUserRoleAdmin(@RequestBody @Valid UserRequest request) {
 		request.setPassword(encoder.encode(request.getPassword()));
@@ -56,8 +56,7 @@ public class UserController {
 		return response;
 	}
 	
-	@PostMapping(path="/users/user/create")
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@PostMapping("/user")
 	public UserResponse createUserRoleUser(@RequestBody @Valid UserRequest request) {
 		request.setPassword(encoder.encode(request.getPassword()));
 		UserDto userDto = userMapper.toDto(request);
@@ -66,7 +65,7 @@ public class UserController {
 		return response;
 	}
 
-	@GetMapping(path="/users/user/get")
+	@GetMapping("/user")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public List<UserResponse> getusers() {
 		List<UserResponse> responseList = new ArrayList<>();
@@ -78,7 +77,7 @@ public class UserController {
 		return responseList;
 	}
 
-	@GetMapping(path = "/users/user/{id}/get")
+	@GetMapping("/user/{id}")
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public UserResponse getUserDetails(@PathVariable Long id) {
 		UserDto userDto = userService.getUserDetail(id);
@@ -86,7 +85,7 @@ public class UserController {
 		return response;
 	}
 
-	@PutMapping(path = "/users/user/{id}/update")
+	@PutMapping("/user/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public UserResponse updateUser(@PathVariable Long id, @RequestBody @Valid UpdateUserRequest request) {
 		
@@ -96,14 +95,14 @@ public class UserController {
 		return response;
 	}
 
-	@DeleteMapping(path = "/users/user/{id}/delete")
+	@DeleteMapping("/users/user")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROlE_USER')")
 	public ResponseEntity<?> deleteUser(@PathVariable Long id) {
 		userService.deleteUser(id);
 		return new ResponseEntity<>("User Successfully Deleted", HttpStatus.OK);
 	}
 	
-	@GetMapping(path="/users/user/get/roles")
+	@GetMapping("/user/roles")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Set<UserResponse> getUsersByRoleName(@RequestParam(value = "name") String roleName) {
 		Set<UserResponse> responseList = new HashSet<>();
